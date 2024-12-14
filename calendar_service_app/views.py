@@ -33,19 +33,21 @@ class EventView(APIView):
             except Event.DoesNotExist:
                 raise NotFound({"error": f"Event with id {id} not found."})
 
+            resp_data = {
+                "id": event.id,
+                "description": event.description
+            }
+            dt = event.time
+            original_format = "%Y-%m-%d %H:%M:%S%z"
+            original_dt = datetime.strptime(str(dt), original_format)
             if datetime_format_param:
-                dt = event.time
-                original_format = "%Y-%m-%d %H:%M:%S%z"
-                original_dt = datetime.strptime(str(dt), original_format)
                 formatted_dt = original_dt.strftime(datetime_format_param)
-                resp_data = {
-                    "id": event.id,
-                    "time": formatted_dt,
-                    "description": event.description
-                }
+                resp_data.update({"time": formatted_dt})
 
                 return Response(resp_data, status=status.HTTP_200_OK)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            formatted_dt = original_dt.strftime("%Y-%m-%dT%H:%M:%S")
+            resp_data.update({"time": formatted_dt})
+            return Response(resp_data, status=status.HTTP_200_OK)
         else:
             events = Event.objects.all()
             serializer = EventSerializer(events, many=True)
