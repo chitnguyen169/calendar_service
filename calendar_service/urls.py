@@ -22,4 +22,5 @@ from calendar_service_app.views import EventView
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/events', EventView.as_view(), name='event-list'),
+    path('api/events/<int:id>/', EventView.as_view(), name='event-detail'),
 ]
