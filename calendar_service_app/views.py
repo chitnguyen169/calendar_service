@@ -12,7 +12,7 @@ from calendar_service_app.models import Event
 from calendar_service_app.serializers import EventSerializer
 
 
-class EventListView(ViewSet):
+class EventView(ViewSet):
     def create(self, request):
         serializer = EventSerializer(data=request.data)
         if serializer.is_valid():

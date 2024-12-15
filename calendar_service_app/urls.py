@@ -9,7 +9,7 @@ from django.http import HttpResponse
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
-from calendar_service_app.views import EventDetailView, EventListView
+from calendar_service_app.views import EventDetailView, EventView
 router = DefaultRouter()
 
 # urlpatterns = [
@@ -17,7 +17,7 @@ router = DefaultRouter()
 #     path('events/<int:id>/', EventDetailView.as_view(), name='event-detail'),
 # ]
 # define the router path and viewset to be used
-router.register(r'events', EventListView, basename="event-list")
+router.register(r'events', EventView, basename="event")
 # router.register(r'events/<int:id>/', EventDetailView, basename="event-detail")
 
 # specify URL Path for rest_framework
