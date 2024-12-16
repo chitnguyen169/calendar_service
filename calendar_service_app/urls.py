@@ -10,7 +10,7 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
 from calendar_service_app.views import EventDetailView, EventView
-router = DefaultRouter()
+router = DefaultRouter(trailing_slash=False)
 
 # urlpatterns = [
 #     path('events/', EventListView.as_view(), base='event-list'),
