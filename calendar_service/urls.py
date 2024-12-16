@@ -17,18 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-# from calendar_service_app.views import EventDetailView, EventListView
-
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('calendar_service_app.urls')),  # Include the app URLs at /api/
 ]
-
-from django.contrib import admin
-# from django.urls import path, include
-# import urls as app_urls
-# from calendar_service_app.views import EventListView
-#
-# urlpatterns = [
-#     path('events/', EventListView.as_view(), name='event-list'),  # Event List View at /api/events/
-# ]

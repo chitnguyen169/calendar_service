@@ -2,7 +2,6 @@ import django
 
 django.setup()
 from rest_framework.test import APITestCase
-from django.urls import reverse
 from datetime import datetime
 import pytz
 
@@ -15,37 +14,38 @@ class EventViewTest(APITestCase):
             description="Event 1", 
             time=datetime(2024, 12, 14, 10, 0, 0, tzinfo=pytz.UTC)
         )
+
         self.event2 = Event.objects.create(
             description="Event 2", 
             time=datetime(2024, 12, 15, 10, 0, 0, tzinfo=pytz.UTC)
         )
 
     def test_get_all_event(self):
-        response = self.client.get("/events/")
+        response = self.client.get("/events")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.json()), 2)
 
     def test_post_event(self):
         data = {"description": "New event", "time": "2024-12-14T12:00:00Z"}
-        response = self.client.post("/events/", data)
+        response = self.client.post("/events", data)
         self.assertEqual(response.status_code, 201)
         self.assertEqual(response.json()['description'], "New event")
         self.assertEqual(response.json()['time'], "2024-12-14T12:00:00Z")
         self.assertIsInstance(response.json()['id'], int)
 
-    def test_cannot_get_entries_with_datetime_filter(self):
+    def test_cannot_get_events_with_datetime_filter(self):
         url = '/events?datetime_format=%Y-%m-%d&from_datetime=14-12-2024&to_datetime=2024-12-15'
         response = self.client.get(url)
         self.assertEqual(response.status_code, 400)
         self.assertIn("Invalid datetime format or value", response.data["error"])
 
-    def test_get_entries_with_datetime_filter_without_from_to_dt(self):
+    def test_get_events_with_datetime_filter_without_from_to_dt(self):
         url = '/events?datetime_format=%Y-%m-%d'
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.json()), 0)
 
-    def test_get_entries_with_datetime_filter(self):
+    def test_get_events_with_datetime_filter(self):
         test_cases = (
             '/events?datetime_format=%Y-%m-%d&from_datetime=2024-12-14&to_datetime=2024-12-15',
             '/events?datetime_format=%d-%m-%Y&from_datetime=14-12-2024&to_datetime=15-12-2024',
@@ -59,3 +59,30 @@ class EventViewTest(APITestCase):
                 self.assertEqual(response.status_code, 200)
                 self.assertEqual(len(response.json()), 1)
                 self.assertEqual(response.json()[0]['description'], "Event 1")
+
+    def test_cannot_get_event_by_id(self):
+        url = f"/events/{self.event1.id + 1000}"
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 404)
+
+    def test_get_event_by_id(self):
+        url = f"/events/{self.event1.id}"
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        expected_resp = {
+            "description": "Event 1",
+            "time": "2024-12-14T10:00:00",
+            "id": self.event1.id
+        }
+        self.assertEqual(expected_resp, response.json())
+
+    def test_get_event_by_id_with_dt_format(self):
+        url = f"/events/{self.event1.id}?datetime_format=%d-%m"
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        expected_resp = {
+            "description": "Event 1",
+            "time": "14-12",
+            "id": self.event1.id
+        }
+        self.assertEqual(expected_resp, response.json())
