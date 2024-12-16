@@ -29,38 +29,41 @@ class EventView(ViewSet):
         datetime_format = request.query_params.get("datetime_format", "%Y-%m-%dT%H:%M:%S")
         from_datetime_str = request.query_params.get("from_datetime")
         to_datetime_str = request.query_params.get("to_datetime")
+        now = timezone.now()
+        default_from_datetime = now.replace(hour=0, minute=0, second=0, microsecond=0)
+        from_datetime = default_from_datetime
+        to_datetime = now
+        tz_val = getattr(settings, 'TIME_ZONE', 'UTC')
+        tz = pytz.timezone(tz_val)
         if request.query_params and datetime_format:
             try:
-                now = timezone.now()
-                default_from_datetime = now.replace(hour=0, minute=0, second=0, microsecond=0)
                 from_datetime = (
                     datetime.strptime(from_datetime_str, datetime_format)
                     if from_datetime_str
                     else default_from_datetime
                 )
-                tz_val = getattr(settings, 'TIME_ZONE', 'UTC')
-                print(tz_val)
-                tz = pytz.timezone(tz_val)
-                from_dt = from_datetime.replace(tzinfo=tz)
 
                 to_datetime = (
                     datetime.strptime(to_datetime_str, datetime_format)
                     if to_datetime_str
                     else now
                 )
-                to_dt = to_datetime.replace(tzinfo=tz)
+
             except ValueError as e:
                 return Response(
                     {"error": f"Invalid datetime format or value: {e}"},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
-            events = Event.objects.filter(time__range=(from_dt, to_dt))
-            serializer = EventSerializer(events, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+        from_dt = from_datetime.replace(tzinfo=tz)
+        to_dt = to_datetime.replace(tzinfo=tz)
 
-        events = Event.objects.all()
+        events = Event.objects.filter(time__range=(from_dt, to_dt))
         serializer = EventSerializer(events, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+        # events = Event.objects.all()
+        # serializer = EventSerializer(events, many=True)
+        # return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 # Create your views here.

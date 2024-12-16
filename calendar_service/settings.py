@@ -74,6 +74,7 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.BrowsableAPIRenderer',
     ],
     'DEFAULT_ROUTER_TRAILING_SLASH': False,
+    'DATETIME_FORMAT': "%Y-%m-%dT%H:%M:%S"
 }
 
 WSGI_APPLICATION = 'calendar_service.wsgi.application'

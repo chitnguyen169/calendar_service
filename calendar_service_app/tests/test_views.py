@@ -1,3 +1,5 @@
+from unittest.mock import patch
+
 import django
 
 django.setup()
@@ -20,10 +22,11 @@ class EventViewTest(APITestCase):
             time=datetime(2024, 12, 15, 10, 0, 0, tzinfo=pytz.UTC)
         )
 
-    def test_get_all_event(self):
+    @patch('django.utils.timezone.now', return_value=datetime(2024, 12, 14, 20, 0, 0))
+    def test_get_all_events_today(self, patch_now):
         response = self.client.get("/events")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.json()), 2)
+        self.assertEqual(len(response.json()), 1)
 
     def test_post_event(self):
         data = {"description": "New event", "time": "2024-12-14T12:00:00Z"}
