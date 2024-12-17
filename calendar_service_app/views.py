@@ -29,41 +29,37 @@ class EventView(ViewSet):
         datetime_format = request.query_params.get("datetime_format", "%Y-%m-%dT%H:%M:%S")
         from_datetime_str = request.query_params.get("from_datetime")
         to_datetime_str = request.query_params.get("to_datetime")
+
         now = timezone.now()
         default_from_datetime = now.replace(hour=0, minute=0, second=0, microsecond=0)
         from_datetime = default_from_datetime
         to_datetime = now
-        tz_val = getattr(settings, 'TIME_ZONE', 'UTC')
-        tz = pytz.timezone(tz_val)
-        if request.query_params and datetime_format:
+
+        if from_datetime_str:
             try:
-                from_datetime = (
-                    datetime.strptime(from_datetime_str, datetime_format)
-                    if from_datetime_str
-                    else default_from_datetime
-                )
-
-                to_datetime = (
-                    datetime.strptime(to_datetime_str, datetime_format)
-                    if to_datetime_str
-                    else now
-                )
-
+                from_datetime = datetime.strptime(from_datetime_str, datetime_format)
             except ValueError as e:
                 return Response(
-                    {"error": f"Invalid datetime format or value: {e}"},
+                    {"error": f"Invalid datetime format for from_datetime: {e}"},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
+        if to_datetime_str:
+            try:
+                to_datetime = datetime.strptime(to_datetime_str, datetime_format)
+            except ValueError as e:
+                return Response(
+                    {"error": f"Invalid datetime format for to_datetime: {e}"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+        tz_val = getattr(settings, 'TIME_ZONE', 'UTC')
+        tz = pytz.timezone(tz_val)
         from_dt = from_datetime.replace(tzinfo=tz)
         to_dt = to_datetime.replace(tzinfo=tz)
 
         events = Event.objects.filter(time__range=(from_dt, to_dt))
         serializer = EventSerializer(events, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
-        # events = Event.objects.all()
-        # serializer = EventSerializer(events, many=True)
-        # return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 # Create your views here.
@@ -77,18 +73,9 @@ class EventDetailView(ViewSet):
         except Event.DoesNotExist:
             raise NotFound({"error": f"Event with id {id} not found."})
 
-        resp_data = {
-            "id": event.id,
-            "description": event.description
-        }
-        dt = event.time
-        original_format = "%Y-%m-%d %H:%M:%S%z"
-        original_dt = datetime.strptime(str(dt), original_format)
+        resp_data = serializer.data
         if datetime_format_param:
-            formatted_dt = original_dt.strftime(datetime_format_param)
+            formatted_dt = event.time.strftime(datetime_format_param)
             resp_data.update({"time": formatted_dt})
 
-            return Response(resp_data, status=status.HTTP_200_OK)
-        formatted_dt = original_dt.strftime("%Y-%m-%dT%H:%M:%S")
-        resp_data.update({"time": formatted_dt})
         return Response(resp_data, status=status.HTTP_200_OK)

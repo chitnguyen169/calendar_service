@@ -25,6 +25,8 @@ SECRET_KEY = 'django-insecure-d7m5_=kd93=21r)x-8z1t+$1h3d^8%vw+6-mgxj!3go9l3&%=q
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+USE_TZ = False
+
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'testserver']
 
 
@@ -78,7 +80,6 @@ REST_FRAMEWORK = {
 }
 
 WSGI_APPLICATION = 'calendar_service.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
