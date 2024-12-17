@@ -1,12 +1,16 @@
 # calendar_service
-## Instructions:
+
+## Intro
+The library is a simple calendar service. The service accepts calendar events comprised of a date-time and description, in JSON format, and save them persistently. On request, the service should return the saved calendar events in a JSON format aligned to the input one.
+
+## Instructions
 1.  Ensure Docker is up and running (e.g. `docker info` or `docker ps`)
 2. Build docker image: `docker build -t calendar-service .`
 3. Run: `docker run -p 8000:8000 calendar-service`
 
 You can access at http://localhost:8000
 
-# Endpoints
+## Endpoints
 GET: http://localhost:8000/events
 
 This will show a list of all events with date from defaults to today at 00:00:00 to now.
