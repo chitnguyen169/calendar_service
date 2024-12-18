@@ -22,13 +22,12 @@ You can access at http://localhost:8000
 - Create an event: 
    
     **POST** http://localhost:8000/events
-
-       ```json
-       {
-           "description": "Interview",
-           "time": "2024-12-10"
-       }
-       ```
+    
+    ```json 
+    {
+        "description": "Interview",
+        "time": "2024-12-10"
+    }
 - Retrieve event without time range - this should return event with date range set to "today" at 00:00:00 to now
 
    **GET** http://localhost:8000/events
