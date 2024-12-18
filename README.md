@@ -1,6 +1,6 @@
-# calendar_service
+# Calendar Service
 
-## Intro
+## Introduction
 The library is a simple calendar service. The service accepts calendar events comprised of a date-time and description, in JSON format, and save them persistently. On request, the service should return the saved calendar events in a JSON format aligned to the input one.
 
 ## Instructions
@@ -11,34 +11,37 @@ The library is a simple calendar service. The service accepts calendar events co
 You can access at http://localhost:8000
 
 ## Endpoints
-**GET**: http://localhost:8000/events
 
-This will show a list of all events with date from defaults to today at 00:00:00 to now.
+| Method | Endpoint           | Description                                                                    | Optional parameters                               | 
+|--------|--------------------|--------------------------------------------------------------------------------|---------------------------------------------------|
+| GET    | `/api/events`      | List all events within date range, by default set to "today" at 00:00:00 to now| `datetime_format`, `from_datetime`, `to_datetime` |
+| POST   | `/api/events`      | Create a new event                                                             | `None`                                            |
+| GET    | `/api/events/{id}` | Retrieve a specific event                                                      | `datetime_format`                                 |
+ 
+## Examples:
+- Create an event: 
+   
+    **POST** http://localhost:8000/events
 
-**GET**: http://localhost:8000/events?[datetime_format=<STRPTIME_FORMAT>][&][from_time=<DATE_TIME>][&][to_time=<DATE_TIME>]
+       ```json
+       {
+           "description": "Interview",
+           "time": "2024-12-10"
+       }
+       ```
+- Retrieve event without time range - this should return event with date range set to "today" at 00:00:00 to now
 
-Example:
-http://localhost:8000/events?datetime_format=%Y-%m-%dT%H:%M:%S&from_datetime=2024-12-14T00:00:00&to_datetime=2024-12-14T23:00:00
-This will show all event on 14/12/2024 from 00:00:00 to 23:00:00
+   **GET** http://localhost:8000/events
+
+- Retrieve event with time range:
+   
+    **GET:** http://localhost:8000/events?datetime_format=%Y-%m-%dT%H:%M:%S&from_datetime=2024-12-14T00:00:00&to_datetime=2024-12-14T23:00:00
+
+- Retrieve an event by ID with specified `datetime_format`
+   
+   **GET** http://localhost:8000/events/1?datetime_format=%d-%m
 
 
-**GET**: http://localhost:8000/events/<ID>[?datetime_format=<STRPTIME_FORMAT>]
-
-Example: http://localhost:8000/events/1?datetime_format=%d-%m
-This will show event id 1 with datetime format such as 14-12 in the response.
-
-
-**POST**: http://localhost:8000/events
-
-Example payload:
-```json
-{
-	"description": "Interview",
-	"time": "2024-12-10"
-}
-```
-This will create an event.
-
-Refer to test_views and test_e2e for more information.
+Refer to `test_views.py` and `test_e2e.py` for more details.
 
 
