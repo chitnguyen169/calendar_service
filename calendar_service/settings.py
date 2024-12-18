@@ -27,7 +27,7 @@ DEBUG = True
 
 USE_TZ = False
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'testserver']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
