@@ -1,11 +1,8 @@
+from datetime import datetime
 from unittest.mock import patch
 
-import django
-
-django.setup()
-from rest_framework.test import APITestCase
-from datetime import datetime
 import pytz
+from rest_framework.test import APITestCase
 
 from calendar_service_app.models import Event
 

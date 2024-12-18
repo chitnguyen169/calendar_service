@@ -1,6 +1,3 @@
-import django
-
-django.setup()
 from django.test import SimpleTestCase
 from django.urls import resolve
 

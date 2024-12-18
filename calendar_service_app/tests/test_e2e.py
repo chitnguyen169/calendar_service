@@ -1,20 +1,17 @@
 from datetime import datetime, timezone
 from unittest.mock import patch
 
-import django
-
-django.setup()
 from rest_framework.test import APITestCase
 
 
 class E2ETest(APITestCase):
     def test_e2e_function(self):
         # Create a new event
-        event1 = self.client.post("/events", {"description": "Event 1", "time": "2024-12-14T10:00:00"})
+        event1 = self.client.post("/events", {"description": "Event 1", "time": "2024-12-14T10:00:00Z"})
         self.assertEqual(event1.status_code, 201)
 
         # Create another new event
-        event2 = self.client.post("/events", {"description": "Event 2", "time": "2024-12-15T20:00:00"})
+        event2 = self.client.post("/events", {"description": "Event 2", "time": "2024-12-15T20:00:00Z"})
         self.assertEqual(event2.status_code, 201)
 
         # Retrieve the event by ID

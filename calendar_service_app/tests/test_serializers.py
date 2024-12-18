@@ -1,8 +1,7 @@
-import django
 
-django.setup()
-from rest_framework.test import APITestCase
 from datetime import datetime, timezone
+
+from rest_framework.test import APITestCase
 
 from calendar_service_app.serializers import EventSerializer
 
