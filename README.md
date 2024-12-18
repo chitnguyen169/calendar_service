@@ -42,6 +42,7 @@ You can access at http://localhost:8000
 
 
 Refer to `test_views.py` and `test_e2e.py` for more details.
+## Testings
 To run all tests: `python manage.py test calendar_service_app/tests`
 
 
