@@ -19,7 +19,8 @@ class EventViewTest(APITestCase):
             time=datetime(2024, 12, 15, 10, 0, 0, tzinfo=pytz.UTC)
         )
 
-    @patch("django.utils.timezone.now", return_value=datetime(2024, 12, 14, 20, 0, 0))
+    @patch("django.utils.timezone.now",
+           return_value=datetime(2024, 12, 14, 20, 0, 0))
     def test_get_all_events_today(self, _):
         response = self.client.get("/events")
         self.assertEqual(response.status_code, 200)
@@ -34,10 +35,12 @@ class EventViewTest(APITestCase):
         self.assertIsInstance(response.json()["id"], int)
 
     def test_cannot_get_events_with_datetime_filter(self):
-        url = "/events?datetime_format=%Y-%m-%d&from_datetime=14-12-2024&to_datetime=2024-12-15"
+        url = ("/events?datetime_format=%Y-%m-%d"
+               "&from_datetime=14-12-2024&to_datetime=2024-12-15")
         response = self.client.get(url)
         self.assertEqual(response.status_code, 400)
-        self.assertIn("Invalid datetime format for from_datetime", response.data["error"])
+        self.assertIn("Invalid datetime format for from_datetime",
+                      response.data["error"])
 
     def test_get_events_with_datetime_filter_without_from_to_dt(self):
         url = "/events?datetime_format=%Y-%m-%d"
@@ -61,23 +64,28 @@ class EventViewTest(APITestCase):
                 self.assertEqual(len(response.json()), 1)
                 self.assertEqual(response.json()[0]["description"], "Event 1")
 
-    @patch("django.utils.timezone.now", return_value=datetime(2024, 12, 15, 20, 0, 0))
+    @patch("django.utils.timezone.now",
+           return_value=datetime(2024, 12, 15, 20, 0, 0))
     def test_get_events_without_from_datetime(self, _):
-        url = "/events?datetime_format=%Y-%m-%dT%H:%M:%S&to_datetime=2024-12-15T15:00:00"
+        url = ("/events?datetime_format=%Y-%m-%dT%H:%M:%S"
+               "&to_datetime=2024-12-15T15:00:00")
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.json()), 1)
         self.assertEqual(response.json()[0]["description"], "Event 2")
 
-    @patch("django.utils.timezone.now", return_value=datetime(2024, 12, 14, 20, 0, 0))
+    @patch("django.utils.timezone.now",
+           return_value=datetime(2024, 12, 14, 20, 0, 0))
     def test_get_events_without_to_datetime(self, _):
-        url = "/events?datetime_format=%Y-%m-%dT%H:%M:%S&from_datetime=2024-12-14T00:00:00"
+        url = ("/events?datetime_format=%Y-%m-%dT%H:%M:%S"
+               "&from_datetime=2024-12-14T00:00:00")
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.json()), 1)
         self.assertEqual(response.json()[0]["description"], "Event 1")
 
-    @patch("django.utils.timezone.now", return_value=datetime(2024, 12, 15, 23, 0, 0))
+    @patch("django.utils.timezone.now",
+           return_value=datetime(2024, 12, 15, 23, 0, 0))
     def test_get_events_without_from_to_datetime(self, _):
         url = "/events?datetime_format=%Y-%m-%d"
         response = self.client.get(url)

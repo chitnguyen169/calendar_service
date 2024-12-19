@@ -14,6 +14,9 @@ from calendar_service_app.serializers import EventSerializer
 
 class EventView(ViewSet):
     def create(self, request):
+        """
+        Method to create an event.
+        """
         serializer = EventSerializer(data=request.data)
         if serializer.is_valid():
             event = serializer.save()
@@ -26,18 +29,28 @@ class EventView(ViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def list(self, request=None):
-        datetime_format = request.query_params.get("datetime_format", "%Y-%m-%dT%H:%M:%S")
+        """
+        Method to list all events with filter by datetime.
+        """
+        datetime_format = request.query_params.get(
+            "datetime_format", "%Y-%m-%dT%H:%M:%S"
+        )
         from_datetime_str = request.query_params.get("from_datetime")
         to_datetime_str = request.query_params.get("to_datetime")
 
+        # default value to today at 00:00:00 to now() if not in query param
         now = timezone.now()
-        default_from_datetime = now.replace(hour=0, minute=0, second=0, microsecond=0)
+        default_from_datetime = now.replace(
+            hour=0, minute=0, second=0, microsecond=0
+        )
         from_datetime = default_from_datetime
         to_datetime = now
 
         if from_datetime_str:
             try:
-                from_datetime = datetime.strptime(from_datetime_str, datetime_format)
+                from_datetime = datetime.strptime(
+                    from_datetime_str, datetime_format
+                )
             except ValueError as e:
                 return Response(
                     {"error": f"Invalid datetime format for from_datetime: {e}"},
@@ -45,7 +58,9 @@ class EventView(ViewSet):
                 )
         if to_datetime_str:
             try:
-                to_datetime = datetime.strptime(to_datetime_str, datetime_format)
+                to_datetime = datetime.strptime(
+                    to_datetime_str, datetime_format
+                )
             except ValueError as e:
                 return Response(
                     {"error": f"Invalid datetime format for to_datetime: {e}"},
@@ -62,11 +77,13 @@ class EventView(ViewSet):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-# Create your views here.
 class EventDetailView(ViewSet):
 
     def list(self, request, id):
-        datetime_format_param = request.query_params.get("datetime_format", None)
+        """
+        Method to list event by id.
+        """
+        datetime_format_param = request.query_params.get("datetime_format")
         try:
             event = Event.objects.get(id=id)
             serializer = EventSerializer(event)
