@@ -77,16 +77,6 @@ class EventView(ViewSet):
         serializer = EventSerializer(events, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @action(detail=False, methods=['get'], url_path='all')
-    def get_all_events(self, request):
-        """
-        Not in scope but an optional endpoint to return all events
-        (for sanity check)
-        """
-        events = Event.objects.all()
-        serializer = EventSerializer(events, many=True)
-        return Response(serializer.data)
-
 
 class EventDetailView(ViewSet):
 
