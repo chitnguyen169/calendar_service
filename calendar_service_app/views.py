@@ -40,10 +40,9 @@ class EventView(ViewSet):
 
         # default value to today at 00:00:00 to now() if not in query param
         now = timezone.now()
-        default_from_datetime = now.replace(
+        from_datetime = now.replace(
             hour=0, minute=0, second=0, microsecond=0
         )
-        from_datetime = default_from_datetime
         to_datetime = now
 
         if from_datetime_str:
@@ -67,6 +66,7 @@ class EventView(ViewSet):
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 
+        # Parse with tz info to filter to avoid warning
         tz_val = getattr(settings, 'TIME_ZONE', 'UTC')
         tz = pytz.timezone(tz_val)
         from_dt = from_datetime.replace(tzinfo=tz)
@@ -86,10 +86,10 @@ class EventDetailView(ViewSet):
         datetime_format_param = request.query_params.get("datetime_format")
         try:
             event = Event.objects.get(id=id)
-            serializer = EventSerializer(event)
         except Event.DoesNotExist:
             raise NotFound({"error": f"Event with id {id} not found."})
 
+        serializer = EventSerializer(event)
         resp_data = serializer.data
         if datetime_format_param:
             formatted_dt = event.time.strftime(datetime_format_param)

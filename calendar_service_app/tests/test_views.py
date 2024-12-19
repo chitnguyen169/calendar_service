@@ -50,16 +50,15 @@ class EventViewTest(APITestCase):
 
     def test_get_events_with_datetime_filter(self):
         test_cases = (
-            "/events?datetime_format=%Y-%m-%d&from_datetime=2024-12-14&to_datetime=2024-12-15",
-            "/events?datetime_format=%d-%m-%Y&from_datetime=14-12-2024&to_datetime=15-12-2024",
-            "/events?datetime_format=%Y-%m-%dT%H:%M:%SZ&from_datetime=2024-12-13T12:00:00Z"
-            "&to_datetime=2024-12-14T23:00:00Z",
-            "/events?from_datetime=2024-12-13T12:00:00&to_datetime=2024-12-14T15:00:00"
-
+            ("%Y-%m-%d format", "/events?datetime_format=%Y-%m-%d&from_datetime=2024-12-14&to_datetime=2024-12-15"),
+            ("%d-%m-%Y format", "/events?datetime_format=%d-%m-%Y&from_datetime=14-12-2024&to_datetime=15-12-2024"),
+            ("%Y-%m-%dT%H:%M:%SZ format", "/events?datetime_format=%Y-%m-%dT%H:%M:%SZ&from_datetime=2024-12-13T12:00:00Z"
+            "&to_datetime=2024-12-14T23:00:00Z"),
+            ("no datetime_format param", "/events?from_datetime=2024-12-13T12:00:00&to_datetime=2024-12-14T15:00:00")
         )
         for case in test_cases:
-            with self.subTest(case):
-                response = self.client.get(case)
+            with self.subTest(case[0]):
+                response = self.client.get(case[1])
                 self.assertEqual(response.status_code, 200)
                 self.assertEqual(len(response.json()), 1)
                 self.assertEqual(response.json()[0]["description"], "Event 1")

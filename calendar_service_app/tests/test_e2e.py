@@ -32,7 +32,7 @@ class E2ETest(APITestCase):
         self.assertEqual(response.data["description"], "Event 2")
         self.assertEqual(response.data["time"], "15-12-2024")
 
-        # Retrieve the list of events
+        # Retrieve the list of events default to today from midnight to now
         fixed_time = datetime(2024, 12, 15, 21, 0, 0, tzinfo=timezone.utc)
         with patch('django.utils.timezone.now', return_value=fixed_time):
             response = self.client.get("/events")
