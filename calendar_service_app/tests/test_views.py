@@ -34,6 +34,11 @@ class EventViewTest(APITestCase):
         self.assertEqual(response.json()["time"], "2024-12-14T12:00:00Z")
         self.assertIsInstance(response.json()["id"], int)
 
+    def test_cannot_post_event(self):
+        data = {"description": "New event", "time": "unexpected date format"}
+        response = self.client.post("/events", data)
+        self.assertEqual(response.status_code, 400)
+
     def test_cannot_get_events_with_datetime_filter(self):
         url = ("/events?datetime_format=%Y-%m-%d"
                "&from_datetime=14-12-2024&to_datetime=2024-12-15")
