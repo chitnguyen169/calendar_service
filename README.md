@@ -49,12 +49,12 @@ Refer to `test_views.py` and `test_e2e.py` for more details.
 To run all tests: `python manage.py test calendar_service_app/tests`
 
 ## Notes on further extensions
-This is a lightweight and simple exercise, so I try to stay within the scope requirements. However, we could consider followings to productionise this:
-1. Add authentication: ensure appropriate permission to access endpoints.
+This is a lightweight exercise, so I try to stay within the scope requirements. However, we could consider followings if this is in production:
+1. Add authentication: ensure appropriate permissions to access endpoints.
 2. Rate limiting: Control the number of requests a client can make within a specific period of time using throttling.
 3. If this is a heavy service with lots of data, we could use Asynchronous view when fetching events and pagination if required.
 4. Database: lightweight SQLite3 is used but for production, we should have proper database such as PostgreSQL.
-5. Hosting the service: More work required in order to host this.
+5. Hosting the service: More infrastructure work required in order to host this.
 
 
 
