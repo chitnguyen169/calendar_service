@@ -4,7 +4,7 @@
 The library is a simple calendar service. The service accepts calendar events comprised of a date-time and description, in JSON format, and save them persistently. On request, the service should return the saved calendar events in a JSON format aligned to the input one.
 
 ## Instructions
-1. Clone repo: git clone `git@github.com:chitnguyen169/calendar_service.git`
+1. Clone repo: `git clone git@github.com:chitnguyen169/calendar_service.git`
 2. Ensure Docker is up and running (e.g. `docker info` or `docker ps`)
 3. Build docker image: `docker build -t calendar-service .`
 4. Run: `docker run -p 8000:8000 calendar-service`
@@ -45,5 +45,14 @@ You can access at http://localhost:8000
 Refer to `test_views.py` and `test_e2e.py` for more details.
 ## Testings
 To run all tests: `python manage.py test calendar_service_app/tests`
+
+## Notes on further extensions
+This is a lightweight and simple exercise, so I try to stay within the scope requirements. However, we could consider followings to productionise this:
+1. Add authentication: ensure appropriate permission to access endpoints.
+2. Rate limiting: Control the number of requests a client can make within a specific period of time using throttling.
+3. Database: lightweight SQLite3 is used but for production, we should have proper database such as PostgreSQL.
+4. Hosting the service: More work required in order to host this.
+
+
 
 
