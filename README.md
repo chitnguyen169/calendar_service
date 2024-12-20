@@ -2,6 +2,7 @@
 
 ## Introduction
 The library is a simple calendar service. The service accepts calendar events comprised of a date-time and description, in JSON format, and save them persistently. On request, the service should return the saved calendar events in a JSON format aligned to the input one.
+This is written in Python 3.9
 
 ## Instructions
 1. Clone repo: `git clone git@github.com:chitnguyen169/calendar_service.git`
