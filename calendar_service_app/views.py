@@ -2,6 +2,7 @@ from datetime import datetime
 
 import pytz
 from django.conf import settings
+from django.db.models import Q
 from django.utils import timezone
 from rest_framework import status
 from rest_framework.exceptions import NotFound
@@ -72,7 +73,9 @@ class EventView(ViewSet):
         from_dt = from_datetime.replace(tzinfo=tz)
         to_dt = to_datetime.replace(tzinfo=tz)
 
-        events = Event.objects.filter(time__range=(from_dt, to_dt))
+        events = Event.objects.filter(
+                    Q(time__gte=from_dt) & Q(time__lte=to_dt)
+                )
         serializer = EventSerializer(events, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
